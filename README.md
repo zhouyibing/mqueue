@@ -1,4 +1,0 @@
-## mqservice
-
-mqservice
-

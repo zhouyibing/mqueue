@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:widget="http://www.opensourceforce.org/schema/widget"
+	xmlns:task="http://www.springframework.org/schema/task" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:jdbc="http://www.springframework.org/schema/jdbc" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jee="http://www.springframework.org/schema/jee" xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:websocket="http://www.springframework.org/schema/websocket"
+	xmlns:lang="http://www.springframework.org/schema/lang" xmlns:oxm="http://www.springframework.org/schema/oxm"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation=" http://www.springframework.org/schema/mvc
+	http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd
+	http://www.springframework.org/schema/task
+	http://www.springframework.org/schema/task/spring-task-4.0.xsd
+	http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context-4.0.xsd
+	http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+	http://www.springframework.org/schema/jdbc
+	http://www.springframework.org/schema/jdbc/spring-jdbc-4.0.xsd
+	http://www.springframework.org/schema/tx
+	http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+	http://www.springframework.org/schema/aop
+	http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
+	http://www.springframework.org/schema/jee
+	http://www.springframework.org/schema/jee/spring-jee-4.0.xsd
+	http://www.springframework.org/schema/util
+	http://www.springframework.org/schema/util/spring-util-4.0.xsd
+	http://www.springframework.org/schema/websocket
+	http://www.springframework.org/schema/websocket/spring-websocket-4.0.xsd
+	http://www.springframework.org/schema/lang
+	http://www.springframework.org/schema/lang/spring-lang-4.0.xsd
+	http://www.springframework.org/schema/oxm
+	http://www.springframework.org/schema/oxm/spring-oxm-4.0.xsd">
+
+	<bean id="writeMQDataSource" class="org.apache.commons.dbcp.BasicDataSource"
+		scope="singleton">
+		<property name="driverClassName" value="${jdbc.driverClassName}" />
+		<property name="url" value="${write.mq.jdbc.url}" />
+		<property name="username" value="${write.mq.jdbc.username}" />
+		<property name="password" value="${write.mq.jdbc.password}" />
+		<property name="initialSize" value="${jdbc.initialSize}" />
+		<property name="maxActive" value="${jdbc.maxActive}" />
+		<property name="minIdle" value="${jdbc.minIdle}" />
+		<property name="maxIdle" value="${jdbc.maxIdle}" />
+		<property name="removeAbandoned" value="${jdbc.removeAbandoned}" />
+		<property name="removeAbandonedTimeout" value="${jdbc.removeAbandonedTimeout}" />
+		<property name="logAbandoned" value="${jdbc.logAbandoned}" />
+		<property name="maxWait" value="${jdbc.maxWait}" />
+		<property name="validationQuery" value="select 1" />
+		<property name="testWhileIdle" value="true" />
+		<property name="minEvictableIdleTimeMillis" value="900000" />
+	</bean>
+
+	<!-- myBatis文件 -->
+	<bean id="mqWriteSqlMap" class="org.mybatis.spring.SqlSessionTemplate">
+		<constructor-arg>
+			<bean class="org.mybatis.spring.SqlSessionFactoryBean">
+				<property name="configLocation" value="classpath:mybatis/sqlmap-config.xml" />
+				<property name="dataSource" ref="writeMQDataSource" />
+			</bean>
+		</constructor-arg>
+	</bean>
+
+	<bean id="mqReadSqlMap" class="org.mybatis.spring.SqlSessionTemplate">
+		<constructor-arg>
+			<bean class="org.mybatis.spring.SqlSessionFactoryBean">
+				<property name="configLocation" value="classpath:mybatis/sqlmap-config.xml" />
+				<property name="dataSource" ref="readMQDataSource" />
+			</bean>
+		</constructor-arg>
+	</bean>
+
+	<bean id="readMQDataSource" class="com.manyi.dcm.lbdatasource.LBDataSource"
+		destroy-method="close">
+		<property name="name" value="readMQDataSource" />
+		<property name="logSql" value="${jdbc.r.logSql}" />
+		<property name="sqlProfile" value="${jdbc.r.sqlProfile}" />
+		<property name="connectionFailover" value="${jdbc.r.connectionFailover}" />
+		<property name="dataSources">
+			<bean class="com.manyi.dcm.lbdatasource.pool.DataSourcePool">
+				<property name="name" value="searchSOADataSourceSlave-Pool" />
+				<property name="type" value="${jdbc.r.type}" />
+				<property name="connectionTestTimeout" value="${jdbc.r.connectionTestTimeout}" />
+				<property name="dataSourceConfigs">
+					<set>
+						<bean class="com.manyi.dcm.lbdatasource.pool.DataSourceConfig">
+							<property name="dataSourceClassName" value="${jdbc.r.dataSourceClassName}" />
+							<property name="name" value="${jdbc.r1.name.mqueue}" />
+							<property name="weight" value="${jdbc.r1.weight.mqueue}" />
+							<property name="username" value="${jdbc.r1.username.mqueue}" />
+							<property name="password" value="${jdbc.r1.password.mqueue}" />
+							<property name="dataSourceProperties">
+								<props>
+									<prop key="url">${jdbc.r1.url.mqueue}</prop>
+									<prop key="useUnicode">${jdbc.r.useUnicode}</prop>
+									<prop key="characterEncoding">${jdbc.r.characterEncoding}</prop>
+									<prop key="cachePrepStmts">${jdbc.r.cachePrepStmts}</prop>
+									<prop key="prepStmtCacheSize">${jdbc.r.prepStmtCacheSize}</prop>
+									<prop key="prepStmtCacheSqlLimit">${jdbc.r.prepStmtCacheSqlLimit}</prop>
+									<prop key="useServerPrepStmts">${jdbc.r.useServerPrepStmts}</prop>
+								</props>
+							</property>
+							<property name="readOnly" value="${jdbc.r.readOnly}" />
+							<property name="maxPoolSize" value="${jdbc.r.maxPoolSize}" />
+							<property name="minIdle" value="${jdbc.r.minIdle}" />
+							<property name="connectionTimeout" value="${jdbc.r.connectionTimeout}" />
+						</bean>
+
+						<bean class="com.manyi.dcm.lbdatasource.pool.DataSourceConfig">
+							<property name="dataSourceClassName" value="${jdbc.r.dataSourceClassName}" />
+							<property name="name" value="${jdbc.r2.name.mqueue}" />
+							<property name="weight" value="${jdbc.r2.weight.mqueue}" />
+							<property name="username" value="${jdbc.r2.username.mqueue}" />
+							<property name="password" value="${jdbc.r2.password.mqueue}" />
+							<property name="dataSourceProperties">
+								<props>
+									<prop key="url">${jdbc.r2.url.mqueue}</prop>
+									<prop key="useUnicode">${jdbc.r.useUnicode}</prop>
+									<prop key="characterEncoding">${jdbc.r.characterEncoding}</prop>
+									<prop key="cachePrepStmts">${jdbc.r.cachePrepStmts}</prop>
+									<prop key="prepStmtCacheSize">${jdbc.r.prepStmtCacheSize}</prop>
+									<prop key="prepStmtCacheSqlLimit">${jdbc.r.prepStmtCacheSqlLimit}</prop>
+									<prop key="useServerPrepStmts">${jdbc.r.useServerPrepStmts}</prop>
+								</props>
+							</property>
+							<property name="readOnly" value="${jdbc.r.readOnly}" />
+							<property name="maxPoolSize" value="${jdbc.r.maxPoolSize}" />
+							<property name="minIdle" value="${jdbc.r.minIdle}" />
+							<property name="connectionTimeout" value="${jdbc.r.connectionTimeout}" />
+						</bean>
+					</set>
+				</property>
+				<property name="loadBalancerType" value="${jdbc.r.loadBalancerType}" />
+			</bean>
+		</property>
+	</bean>
+</beans>

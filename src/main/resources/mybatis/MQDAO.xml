@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="MQDAO">
+	<insert id="addMessage" parameterType="java.util.HashMap">
+	   INSERT INTO 
+			${tableName} (msgUID,msgTopic,msgType,objectId,userId,memo,ip,addTime)
+	   VALUES(#{msgUID},#{msgTopic},#{msgType},#{objectId},#{userId},#{memo},#{ip}, NOW())
+	</insert>
+	
+	<sql id="MqMessageFields">
+		id,msgUID,msgTopic,msgType,objectId,userId,memo,ip,addTime
+	</sql>
+	<select id="getMessageById" parameterType="java.util.HashMap" resultType="com.manyi.mqservice.model.MqMessage">
+	   SELECT 
+		 <include refid="MqMessageFields" />
+	   FROM ${tableName} WHERE id = #{msgId}
+	</select>
+	
+	<select id="getMessageByUID" parameterType="java.util.HashMap" resultType="int">
+	   SELECT count(*) FROM ${tableName} WHERE msgUID = #{uuid}
+	</select>
+	
+	<select id="getMessageBefore" parameterType="java.util.HashMap" resultType="com.manyi.mqservice.model.MqMessage">
+	   SELECT 
+		<include refid="MqMessageFields" />
+	   FROM ${tableName} WHERE addTime >= #{dateStr} 
+	  	<if test="topics !=null" >
+	      AND msgTopic in (${topics})
+	    </if>
+	   ORDER BY id ASC
+	</select>
+	
+	<update id="createTable" parameterType="java.util.HashMap" >
+	   CREATE TABLE ${tableName} (
+			  `id` int(9) NOT NULL auto_increment,
+			  `msgUID` varchar(32) default NULL,
+			  `msgTopic` varchar(30) default NULL,
+			  `msgType` varchar(20) NOT NULL default '0',
+			  `objectId` int(9) NOT NULL default '0',
+			  `userId` int(9) NOT NULL default '0',
+			  `ip` int(10) NOT NULL default '0',
+			  `memo` text,
+			  `addTime` datetime NOT NULL default '0000-00-00 00:00:00',
+			  PRIMARY KEY  (`id`),
+			  UNIQUE KEY `UID_INDEX` (`msgUID`),
+			  KEY `user_index` (`userId`),
+			  KEY `date_index` (`addTime`),
+			  KEY `topic_index` (`msgTopic`)
+			) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin
+	</update>
+</mapper>
