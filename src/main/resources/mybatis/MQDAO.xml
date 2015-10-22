@@ -36,7 +36,7 @@
 			  `msgUID` varchar(32) default NULL,
 			  `msgTopic` varchar(30) default NULL,
 			  `msgType` varchar(20) NOT NULL default '0',
-			  `objectId` int(9) NOT NULL default '0',
+			  `objectId` bigint(20) NOT NULL default '0',
 			  `userId` int(9) NOT NULL default '0',
 			  `ip` int(10) NOT NULL default '0',
 			  `memo` text,

@@ -20,7 +20,7 @@ public class MqMessage extends BaseModel implements Serializable {
 	/** 消息的处理类型，无限制，由消息生产者定义 */
 	private String msgType;
 	/** 消息对象所针对的对象ID,和具体业务有关，具体含义由消息生产者定义 */
-	private int objectId;
+	private long objectId;
 	/** 消息对象所针对的用户ID,和具体业务有关，具体含义由消息生产者定义 */
 	private int userId;
 	/** 消息对象扩展信息，具体含义由消息生产者定义 */
@@ -84,11 +84,11 @@ public class MqMessage extends BaseModel implements Serializable {
 		this.msgType = msgType;
 	}
 
-	public int getObjectId() {
+	public long getObjectId() {
 		return objectId;
 	}
 
-	public void setObjectId(int objectId) {
+	public void setObjectId(long objectId) {
 		this.objectId = objectId;
 	}
 
