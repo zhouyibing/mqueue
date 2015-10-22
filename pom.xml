@@ -3,8 +3,8 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.manyi.iw</groupId>
 	<artifactId>mqueue</artifactId>
-	<packaging>jar</packaging>
-	<version>0.0.1-SNAPSHOT</version>
+	<packaging>war</packaging>
+	<version>0.0.3-RELEASE</version>
 	<name>mqueue Maven Webapp</name>
 
 	<repositories>
