@@ -78,7 +78,7 @@ public abstract class AbstractHandler extends IoHandlerAdapter {
 			JSONObject msg = (JSONObject) JSONValue.parse(s);
 			String msgTopic = (String) msg.get("msgTopic");
 			String msgType = (String) msg.get("msgType");
-			int objectId = Integer.valueOf(msg.get("objectId") + "");
+			long objectId = Long.valueOf(msg.get("objectId") + "");
 			int userId = Integer.valueOf(msg.get("userId") + "");
 			Object aTime = msg.get("addTime");
 			if (aTime != null) {
