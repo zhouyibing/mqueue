@@ -5,7 +5,7 @@
 	<groupId>com.manyi.iw</groupId>
 	<artifactId>mqueue</artifactId>
 	<packaging>pom</packaging>
-	<version>0.0.6-RELEASE</version>
+	<version>0.0.5-RELEASE</version>
 	<name>mqueue</name>
 	<modules>
 		<module>mqClient</module>
