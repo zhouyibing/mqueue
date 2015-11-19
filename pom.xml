@@ -5,21 +5,12 @@
 	<groupId>com.manyi.iw</groupId>
 	<artifactId>mqueue</artifactId>
 	<packaging>pom</packaging>
-	<version>0.0.4-SNAPSHOT</version>
+	<version>0.0.6-RELEASE</version>
 	<name>mqueue</name>
 	<modules>
 		<module>mqClient</module>
 		<module>mqServer</module>
 	</modules>
-
-	<repositories>
-		<repository>
-			<id>maven-restlet</id>
-			<name>Public online Restlet repository</name>
-			<url>http://maven.restlet.org</url>
-		</repository>
-	</repositories>
-
 
 	<distributionManagement>
 		<repository>
@@ -76,68 +67,34 @@
 				<artifactId>commons-lang3</artifactId>
 				<version>3.0</version>
 			</dependency>
-			<dependency>
-				<groupId>com.googlecode.json-simple</groupId>
-				<artifactId>json-simple</artifactId>
-				<version>1.1.1</version>
-			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
 
 	<profiles>
-		<profile>
-			<id>dev</id>
-			<properties>
-				<env>conf/dev</env>
-			</properties>
-			<activation>
-				<activeByDefault>true</activeByDefault>
-			</activation>
-		</profile>
-
-		<profile>
-			<id>test</id>
-			<properties>
-				<env>conf/test</env>
-			</properties>
-		</profile>
-
-		<profile>
-			<id>beta</id>
-			<properties>
-				<env>conf/beta</env>
-			</properties>
-		</profile>
-
-		<profile>
-			<id>prod</id>
-			<properties>
-				<env>conf/prod</env>
-			</properties>
-		</profile>
 	</profiles>
 
 	<build>
-		<finalName>mqueue</finalName>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-resources-plugin</artifactId>
-				<version>2.5</version>
-				<configuration>
-					<encoding>UTF-8</encoding>
-				</configuration>
-			</plugin>
-			<plugin>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>2.3.2</version>
-				<configuration>
-					<source>1.7</source>
-					<target>1.7</target>
-					<encoding>UTF-8</encoding>
-				</configuration>
-			</plugin>
-		</plugins>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-resources-plugin</artifactId>
+					<version>2.5</version>
+					<configuration>
+						<encoding>UTF-8</encoding>
+					</configuration>
+				</plugin>
+				<plugin>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<version>2.3.2</version>
+					<configuration>
+						<source>1.7</source>
+						<target>1.7</target>
+						<encoding>UTF-8</encoding>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
 	</build>
 </project>
