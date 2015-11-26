@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>com.manyi.iw</groupId>
 		<artifactId>mqueue</artifactId>
-		<version>0.0.6-RELEASE</version>
+		<version>0.0.5-RELEASE</version>
 	</parent>
 	<packaging>war</packaging>
 	<artifactId>mqServer</artifactId>

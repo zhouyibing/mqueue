@@ -6,9 +6,9 @@
 	<parent>
 		<artifactId>mqueue</artifactId>
 		<groupId>com.manyi.iw</groupId>
-		<version>0.0.6-RELEASE</version>
+		<version>0.0.5-RELEASE</version>
 	</parent>
-	<version>0.0.6-RELEASE</version>
+	<version>0.0.5-RELEASE</version>
 	<artifactId>mqClient</artifactId>
 	<packaging>jar</packaging>
 	<name>mqClient</name>
