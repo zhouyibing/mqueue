@@ -34,9 +34,10 @@ public class MsgQueueSenderClient extends BaseClient {
 	private ArrayBlockingQueue<MqMessage> unsendedQueue = new ArrayBlockingQueue<MqMessage>(10000, true);
 	/** 处理未发送成功的线程 */
 	private Thread monitor = null;
-	/** 连接对象池 */
+	/** 连接对象池  这个对象连接池的作用：*/
 	private GenericObjectPool connectionPool = new GenericObjectPool(new SessionPoolObjectFactory());
 
+	//借用线程池后台异步处理未发送或发送失败消息的重新入队
 	private static ScheduledThreadPoolExecutor schedulePool = new ScheduledThreadPoolExecutor(10);
 
 	/** 发送池大小 */
@@ -89,6 +90,7 @@ public class MsgQueueSenderClient extends BaseClient {
 	 * 延时5s加入重新发送队列
 	 */
 	private void addUnsendedMessage(final MqMessage msg) {
+		//这里为什么需要线程处理，queue是一个阻塞队列，加入队列可能会阻塞，用线程处理放弃调用方异步执行，减少等待时间和消息吞吐量
 		Runnable task = new Runnable() {
 			public void run() {
 				try {
@@ -150,6 +152,7 @@ public class MsgQueueSenderClient extends BaseClient {
 
 	/**
 	 * 发送消息，并等待返回
+	 * 这里的消息发送时采用同步式，可以将消息放到一个发送队列中，后台线程统一处理，调用方不用等待（或者调用方提供一个callback回调），消息发送成功后响应
 	 */
 	public boolean sendMessage(MqMessage msg) {
 		if (msg.getMsgUID() == null) {
@@ -157,13 +160,14 @@ public class MsgQueueSenderClient extends BaseClient {
 			String uuid = UUID.randomUUID().toString().replaceAll("-", "");
 			msg.setMsgUID(uuid);
 		}
+		//连接池已满，将消息返还给队列
 		if (connectionPool.getMaxActive() <= connectionPool.getNumActive()) {
 			addUnsendedMessage(msg);
 			return false;
 		}
 		Connection con = null;
 		try {
-			// 从连接池获得连接
+			// 从连接池获得连接，borrowObject是一个阻塞方法
 			con = (Connection) connectionPool.borrowObject();
 			if (con == null) {
 				addUnsendedMessage(msg); // 网络连接断开 , 加入消息未发送成功队列
@@ -347,6 +351,7 @@ public class MsgQueueSenderClient extends BaseClient {
 			if (logger.isInfoEnabled()) {
 				logger.info("receive answer:" + message);
 			}
+			//上面将最近一次请求保存在session中，这里把请求从session中取出，唤醒前面等待响应处理
 			RequestMessage req = (RequestMessage) session.getAttribute("req");
 			if (req != null) {
 				req.anounceResp((String) message);

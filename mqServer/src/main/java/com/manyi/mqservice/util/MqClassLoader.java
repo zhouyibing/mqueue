@@ -26,7 +26,7 @@ public class MqClassLoader extends ClassLoader {
      * 将类文件载入到命名空间
      * 
      * @param name
-     *            类的全名 : eg, com.tudou.util.item
+     *            类的全名 :
      * @param data
      *            class文件的byte[]
      */

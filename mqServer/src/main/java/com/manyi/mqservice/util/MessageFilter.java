@@ -5,7 +5,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.apache.log4j.Logger;
 
 import com.manyi.mqservice.reload.MessageProcessor;
-
+//对重复发送的消息过滤
 public class MessageFilter {
     private static final long PERIOD = 60 * 1000; // 重置缓存时间
     private static final Logger logger = Logger.getLogger(MessageProcessor.class);

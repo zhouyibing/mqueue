@@ -173,6 +173,7 @@ public class MsgQueueSuberClient extends BaseClient {
 		}
 		String resp = null;
 		try {
+			//阻塞到服务器响应，通过handler messageReceived中的anounceResp来通知响应到达，内部是countdownlatch实现
 			resp = req.getResponse(millis, TimeUnit.MILLISECONDS);
 		} catch (InterruptedException e) {
 		}

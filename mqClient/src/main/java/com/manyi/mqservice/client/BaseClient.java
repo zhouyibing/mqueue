@@ -6,10 +6,6 @@ import java.util.Random;
 
 import org.apache.commons.lang3.StringUtils;
 
-/**
- * @author chentong
- * @date 2014-9-15
- */
 public class BaseClient
 {
 

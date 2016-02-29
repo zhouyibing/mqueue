@@ -26,7 +26,7 @@ public class MsgDAO {
 	private static final Logger logger = Logger.getLogger(MsgDAO.class);
 
 	/**
-	 * 创建一个线程，每小时尝试创建新表
+	 * 创建一个线程，每天尝试创建新表
 	 */
 	@PostConstruct
 	public void initTable() {

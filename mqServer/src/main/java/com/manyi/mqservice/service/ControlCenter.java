@@ -28,7 +28,7 @@ public class ControlCenter {
 	public static final String MQ_APP_TAG = "inner_mq";
 	/** 消息队列(10w条) */
 	private static ArrayBlockingQueue<MqMessage> blockQueue = new ArrayBlockingQueue<MqMessage>(300000, true);
-	/** 工作线程组 */
+	/** 工作线程组 主要负责从queue中取消息交给messageProcessor处理*/
 	private static WorkThread[] runner = null;
 	/** 初始化线程数 */
 	private static int threadCount = Configuration.getInt("queue.thread.count", 10);
@@ -50,7 +50,7 @@ public class ControlCenter {
 	private static boolean saveMsgToDB = true;
 	/** 是否开启分应用统计 */
 	private static boolean enableAppStat = true;
-	/** 定时处理线程池 */
+	/** 定时处理线程池 主要用于定时处理消息的入库,出库组装发送等耗时的任务*/
 	private static ScheduledThreadPoolExecutor schedulePool = new ScheduledThreadPoolExecutor(200);
 
 	/** 请求发送监控，用于监视服务端请求发送拥堵情况 */
@@ -66,7 +66,7 @@ public class ControlCenter {
 		initInnerConnector();
 		/* 初始化控制台服务 */
 		initConsoleServer();
-
+        //这个请求监控主要是限流,关闭大量请求的session
 		initRequestSendMonitor();
 	}
 

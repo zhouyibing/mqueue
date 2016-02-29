@@ -16,7 +16,7 @@ import com.manyi.mqservice.util.Configuration;
 import com.manyi.utils.WebTool;
 
 /**
- * 这个类用于服务器集群间的内部连接管理
+ * 这个类用于服务器集群间的内部连接管理,处理集群间的消息同步,定于集群内所有服务器的消息
  */
 public class InnerConnector {
 
